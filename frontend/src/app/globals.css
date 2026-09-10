@@ -1,0 +1,325 @@
+@import "tailwindcss";
+
+:root {
+  --background: 224 71% 4%;
+  --foreground: 210 20% 98%;
+  --card: 224 71% 7%;
+  --card-foreground: 210 20% 98%;
+  --popover: 224 71% 4%;
+  --popover-foreground: 210 20% 98%;
+  --primary: 263.4 90% 64.3%;
+  --primary-foreground: 210 20% 98%;
+  --secondary: 215 27.9% 16.9%;
+  --secondary-foreground: 210 20% 98%;
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 210 20% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 20% 98%;
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 263.4 90% 64.3%;
+  --radius: 0.75rem;
+}
+
+.light-theme {
+  --background: 0 0% 100%;
+  --foreground: 224 71% 4%;
+  --card: 0 0% 98%;
+  --card-foreground: 224 71% 4%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 224 71% 4%;
+  --primary: 262.1 83.3% 57.8%;
+  --primary-foreground: 210 20% 98%;
+  --secondary: 220 14.3% 95.9%;
+  --secondary-foreground: 220.9 39.3% 11%;
+  --muted: 220 14.3% 95.9%;
+  --muted-foreground: 220 8.9% 46.1%;
+  --accent: 220 14.3% 95.9%;
+  --accent-foreground: 220.9 39.3% 11%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 20% 98%;
+  --border: 220 13% 91%;
+  --input: 220 13% 91%;
+  --ring: 262.1 83.3% 57.8%;
+}
+
+@theme inline {
+  --font-sans: var(--font-sans-google), var(--font-outfit-google), sans-serif;
+  --font-mono: 'Geist Mono', monospace;
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+}
+
+
+body {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: 'Plus Jakarta Sans', 'Outfit', sans-serif;
+  overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Glassmorphism custom styles */
+.glass-panel {
+  background: rgba(13, 16, 27, 0.45);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.light-theme .glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.glass-card {
+  background: linear-gradient(135deg, rgba(20, 24, 43, 0.6) 0%, rgba(13, 16, 27, 0.8) 100%);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  border-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px 0 rgba(147, 51, 234, 0.15);
+}
+
+.light-theme .glass-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(249, 250, 251, 0.9) 100%);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
+}
+
+.light-theme .glass-card:hover {
+  border-color: rgba(147, 51, 234, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px 0 rgba(147, 51, 234, 0.08);
+}
+
+/* Glowing text and utility colors */
+.text-glow-primary {
+  text-shadow: 0 0 12px rgba(168, 85, 247, 0.4);
+}
+
+.glow-btn {
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
+  transition: all 0.3s ease;
+}
+
+.glow-btn:hover {
+  box-shadow: 0 0 30px rgba(168, 85, 247, 0.6);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--background));
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted));
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary));
+}
+
+/* ─── Light Theme Overrides ─────────────────────────────────────────────────
+   Tailwind utility classes (bg-slate-950, text-slate-200 etc.) are hardcoded
+   and ignore CSS variables, so we override them explicitly for .light-theme.
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* Page background */
+.light-theme body,
+.light-theme .min-h-screen,
+.light-theme .bg-slate-950 {
+  background-color: #f1f5f9 !important;
+}
+
+/* Sidebar */
+.light-theme aside {
+  background: rgba(255, 255, 255, 0.92) !important;
+  border-color: #e2e8f0 !important;
+}
+
+/* Top mobile nav */
+.light-theme .bg-slate-900 {
+  background-color: #ffffff !important;
+}
+
+/* Cards and panels */
+.light-theme .glass-card,
+.light-theme .glass-panel {
+  background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.95) 100%) !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 4px 24px 0 rgba(0,0,0,0.06) !important;
+}
+
+/* Text colours */
+.light-theme .text-slate-100,
+.light-theme .text-slate-200,
+.light-theme .text-white {
+  color: #0f172a !important;
+}
+
+.light-theme .text-slate-300,
+.light-theme .text-slate-400 {
+  color: #475569 !important;
+}
+
+.light-theme .text-slate-500,
+.light-theme .text-slate-600 {
+  color: #64748b !important;
+}
+
+/* Table rows & borders */
+.light-theme .divide-slate-850\/55 > *,
+.light-theme .divide-slate-900 > *,
+.light-theme .divide-slate-800 > * {
+  border-color: #e2e8f0 !important;
+}
+
+.light-theme .border-slate-800,
+.light-theme .border-slate-850,
+.light-theme .border-slate-900 {
+  border-color: #e2e8f0 !important;
+}
+
+/* Table header backgrounds */
+.light-theme .bg-slate-900\/60,
+.light-theme .bg-slate-950\/40,
+.light-theme .bg-slate-950\/60 {
+  background-color: rgba(241, 245, 249, 0.8) !important;
+}
+
+/* Hover rows */
+.light-theme .hover\:bg-slate-900\/20:hover {
+  background-color: rgba(241, 245, 249, 0.9) !important;
+}
+
+/* Input & select fields */
+.light-theme input,
+.light-theme select,
+.light-theme textarea {
+  background-color: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+.light-theme input::placeholder,
+.light-theme textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* Scrollbar in light mode */
+.light-theme ::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.light-theme ::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+}
+
+.light-theme ::-webkit-scrollbar-thumb:hover {
+  background: #8b5cf6;
+}
+@keyframes wave {
+  0% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.1); opacity: 0.4; }
+  100% { transform: scale(1.2); opacity: 0; }
+}
+
+.wave-ring {
+  position: absolute;
+  border: 2px solid hsl(var(--primary));
+  border-radius: 50%;
+  animation: wave 2s infinite ease-out;
+}
+
+.wave-ring-delay-1 {
+  animation-delay: 0.6s;
+}
+
+.wave-ring-delay-2 {
+  animation-delay: 1.2s;
+}
+
+/* ─── Ultra Modern 3D Floating & Glow Keyframes ─── */
+@keyframes float3D {
+  0%, 100% {
+    transform: translateY(0px) rotateX(8deg) rotateY(-12deg) rotateZ(2deg);
+  }
+  50% {
+    transform: translateY(-16px) rotateX(12deg) rotateY(-6deg) rotateZ(4deg);
+  }
+}
+
+@keyframes floatGentle {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes soundWaveBar {
+  0%, 100% {
+    height: 6px;
+  }
+  50% {
+    height: 28px;
+  }
+}
+
+@keyframes radarSweep {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-float-3d {
+  animation: float3D 6s ease-in-out infinite;
+  transform-style: preserve-3d;
+}
+
+.animate-float-gentle {
+  animation: floatGentle 4s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 4s ease-in-out infinite;
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.perspective-2000 {
+  perspective: 2000px;
+}
+
