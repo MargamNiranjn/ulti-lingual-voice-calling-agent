@@ -12,8 +12,12 @@ import {
   X,
   Upload,
   AlertCircle,
-  Zap
+  Zap,
+  Flame,
+  Clock,
+  ArrowUpRight
 } from "lucide-react";
+import TopBar from "@/components/TopBar";
 import CallSimulator from "@/components/CallSimulator";
 
 interface Customer {
@@ -214,32 +218,39 @@ export default function CustomersPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col md:flex-row">
+    <div className="min-h-screen bg-[#05070d] text-slate-100 flex flex-col md:flex-row relative overflow-hidden font-sans cyber-grid">
       <Sidebar />
 
-      <main className="flex-1 md:ml-64 p-6 md:p-8 space-y-6 overflow-y-auto">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <main className="flex-1 md:ml-64 p-5 md:p-8 space-y-6 overflow-y-auto relative z-10">
+        <TopBar
+          title="Lead Intelligence & CRM Directory"
+          subtitle="Real-Time Qualification Scores, Multi-Turn Transcripts & Language Preferences"
+        />
+
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-1">
           <div>
-            <h2 className="text-3xl font-extrabold tracking-tight text-white">Customer Management</h2>
-            <p className="text-sm text-slate-400 font-medium">Create, update, filter, or bulk upload client lead contacts.</p>
+            <h3 className="text-xl font-bold tracking-tight text-white font-mono flex items-center gap-2">
+              PROSPECT LEADS DIRECTORY
+            </h3>
+            <p className="text-xs text-slate-400 font-medium">Filter qualified high-intent leads and schedule human sales follow-ups.</p>
           </div>
           <div className="flex items-center gap-3 flex-wrap">
             {/* ── Quick Simulate button ── */}
             <button
               onClick={() => { setIsQuickSimOpen(true); setQsError(""); }}
-              className="flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 rounded-xl cursor-pointer transition-all shadow-lg shadow-emerald-900/30"
+              className="flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-black bg-cyan-400 hover:bg-cyan-300 rounded-xl cursor-pointer transition-all shadow-[0_0_15px_rgba(6,182,212,0.3)] font-mono uppercase"
             >
               <Zap className="h-4 w-4" /> Quick Simulate
             </button>
             <button
               onClick={() => setIsImportOpen(true)}
-              className="flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-slate-300 bg-slate-900 border border-slate-800 rounded-xl hover:bg-slate-850 cursor-pointer transition-all"
+              className="flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-slate-300 bg-slate-900 border border-slate-800 rounded-xl hover:bg-slate-850 cursor-pointer transition-all font-mono"
             >
               <FileSpreadsheet className="h-4 w-4" /> Import CSV/Excel
             </button>
             <button
               onClick={() => setIsAddOpen(true)}
-              className="flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-white bg-purple-600 hover:bg-purple-500 rounded-xl cursor-pointer glow-btn transition-all"
+              className="flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 rounded-xl cursor-pointer shadow-[0_0_15px_rgba(59,130,246,0.3)] transition-all font-mono uppercase"
             >
               <UserPlus className="h-4 w-4" /> Add Lead
             </button>

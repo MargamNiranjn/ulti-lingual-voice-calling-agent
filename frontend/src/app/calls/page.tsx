@@ -18,6 +18,7 @@ import {
   Search,
   AlertCircle
 } from "lucide-react";
+import TopBar from "@/components/TopBar";
 
 interface Call {
   id: number;
@@ -128,23 +129,28 @@ export default function CallsPage() {
   });
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col md:flex-row">
+    <div className="min-h-screen bg-[#05070d] text-slate-100 flex flex-col md:flex-row relative overflow-hidden font-sans cyber-grid">
       <Sidebar />
 
-      <main className="flex-1 md:ml-64 p-6 md:p-8 space-y-6 overflow-y-auto relative">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <main className="flex-1 md:ml-64 p-5 md:p-8 space-y-6 overflow-y-auto relative z-10">
+        <TopBar
+          title="Call Connected Records"
+          subtitle="Real-Time Call Analytics, Multi-Turn Dialogue Transcripts & Lead Intent Extraction"
+        />
+
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-1">
           <div>
-            <h2 className="text-3xl font-extrabold tracking-tight text-white">
-              Call Connected History
-            </h2>
-            <p className="text-sm text-slate-400 font-medium">
+            <h3 className="text-xl font-bold tracking-tight text-white font-mono flex items-center gap-2">
+              CALL HISTORY & TRANSCRIPT AUDIT
+            </h3>
+            <p className="text-xs text-slate-400 font-medium">
               Browse transcripts, AI-generated lead ratings, sentiment scores, and audio playbacks.
             </p>
           </div>
           
           <button
             onClick={handleExportCSV}
-            className="flex items-center gap-2 px-5 py-2.5 text-xs font-bold text-slate-200 bg-purple-600/10 border border-purple-500/30 hover:bg-purple-600 hover:text-white rounded-xl transition-all cursor-pointer shadow-lg shadow-purple-900/10"
+            className="flex items-center gap-2 px-5 py-2.5 text-xs font-bold text-black bg-cyan-400 hover:bg-cyan-300 rounded-xl transition-all cursor-pointer shadow-[0_0_15px_rgba(6,182,212,0.3)] font-mono uppercase"
           >
             <FileDown className="h-4 w-4" /> Export Leads Report (CSV)
           </button>

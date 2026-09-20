@@ -808,6 +808,135 @@ async def vapi_webhook(
 
     return {"status": "success", "interest_level": interest_level}
 
+
+@router.post("/bolna/webhook")
+async def bolna_webhook(
+    request: Request,
+    background_tasks: BackgroundTasks,
+    db: Session = Depends(get_db)
+):
+    """
+    Webhook handler for Bolna AI Voice Calling Engine (bolna-ai/bolna).
+    Receives call completion events, audio transcripts, recordings,
+    and runs structured lead qualification analysis.
+    """
+    try:
+        payload = await request.json()
+    except Exception:
+        return {"received": True}
+
+    call_id_str = (
+        payload.get("user_data", {}).get("call_id") or
+        payload.get("call_id") or
+        payload.get("id")
+    )
+
+    call_rec = None
+    if call_id_str and str(call_id_str).isdigit():
+        call_rec = db.query(Call).filter(Call.id == int(call_id_str)).first()
+    if not call_rec and payload.get("id"):
+        call_rec = db.query(Call).filter(Call.sid == str(payload.get("id"))).first()
+
+    if not call_rec:
+        return {"received": True, "status": "no_matching_call"}
+
+    customer = call_rec.customer
+    lang = customer.preferred_language if customer else "English"
+    duration = int(payload.get("duration", 0) or payload.get("durationSeconds", 0) or 45)
+    transcript = payload.get("transcript", "")
+    recording_url = payload.get("recording_url") or payload.get("telephony_data", {}).get("recording_url")
+
+    call_rec.status = "Completed"
+    call_rec.duration = duration
+    if recording_url:
+        call_rec.recording_url = recording_url
+
+    # Analyze transcript
+    from app.routers.settings import get_company_profile_dict
+    profile = get_company_profile_dict(db)
+    openai_srv = OpenAIService()
+
+    turns = []
+    if isinstance(transcript, list):
+        turns = transcript
+    elif isinstance(transcript, str) and transcript:
+        for line in transcript.split("\n"):
+            if ":" in line:
+                p = line.split(":", 1)
+                role = "assistant" if any(w in p[0].lower() for w in ["ai", "agent", "assistant", "bot"]) else "user"
+                turns.append({"role": role, "content": p[1].strip()})
+            else:
+                turns.append({"role": "user", "content": line.strip()})
+
+    analysis = openai_srv.analyze_completed_call(
+        chat_history=turns or [{"role": "assistant", "content": transcript}],
+        language=lang,
+        company_name=profile.get("company_name", "Our Company"),
+        service_name=customer.service_of_interest if customer else profile.get("company_services", "Our Service")
+    )
+
+    interest_level = analysis.get("interest_level", "MEDIUM")
+    interest_status = analysis.get("interest_status", "Maybe Interested")
+
+    if customer:
+        customer.interest_level = interest_level
+        customer.status = interest_status
+        customer.call_status = "COMPLETED"
+        customer.call_duration = duration
+        customer.call_summary = analysis.get("summary")
+        customer.service_of_interest = customer.service_of_interest or analysis.get("service_required")
+        customer.customer_requirement = analysis.get("customer_requirement")
+        customer.follow_up_required = bool(analysis.get("follow_up_required", False))
+        customer.preferred_callback_time = analysis.get("preferred_callback_time")
+        customer.call_id = call_rec.id
+
+    ai_sum = db.query(AISummary).filter(AISummary.call_id == call_rec.id).first()
+    if not ai_sum:
+        ai_sum = AISummary(call_id=call_rec.id)
+        db.add(ai_sum)
+
+    ai_sum.transcript = analysis.get("transcript") or (transcript if isinstance(transcript, str) else json.dumps(transcript))
+    ai_sum.summary = analysis.get("summary", "")
+    ai_sum.interest_status = interest_status
+    ai_sum.interest_level = interest_level
+    ai_sum.lead_score = analysis.get("lead_score", 80 if interest_level == "HIGH" else 45)
+    ai_sum.sentiment = analysis.get("sentiment", "Positive" if interest_level == "HIGH" else "Neutral")
+    ai_sum.preferred_callback_time = analysis.get("preferred_callback_time")
+    ai_sum.language_used = lang
+    ai_sum.service_required = analysis.get("service_required")
+    ai_sum.customer_requirement = analysis.get("customer_requirement")
+    ai_sum.timeline = analysis.get("timeline")
+    ai_sum.follow_up_required = bool(analysis.get("follow_up_required", False))
+    ai_sum.ai_notes = analysis.get("ai_notes", "Follow up with customer regarding requirements.")
+
+    db.commit()
+
+    # Trigger alerts if HIGH interest
+    if interest_level == "HIGH" and customer:
+        alert_phone = db.query(Setting).filter(Setting.key == "alert_phone").first()
+        alert_email = db.query(Setting).filter(Setting.key == "alert_email").first()
+        alert_msg = f"🚨 [HOT LEAD QUALIFIED via Bolna AI] 🚨\nName: {customer.name}\nMobile: {customer.mobile}\nLanguage: {lang}\nSummary: {ai_sum.summary}"
+        telephony = TelephonyService()
+        if alert_phone and alert_phone.value.strip():
+            telephony.send_sms_alert(alert_phone.value.strip(), alert_msg)
+        if alert_email and alert_email.value.strip():
+            send_lead_alert(
+                to_email=alert_email.value.strip(),
+                customer_name=customer.name,
+                mobile=customer.mobile,
+                company=customer.company_name or "N/A",
+                language=lang,
+                lead_score=ai_sum.lead_score,
+                sentiment=ai_sum.sentiment,
+                summary=ai_sum.summary or "",
+                callback_time=ai_sum.preferred_callback_time,
+                ai_notes=ai_sum.ai_notes,
+                transcript=ai_sum.transcript
+            )
+
+    return {"status": "success", "interest_level": interest_level}
+
+
 @router.post("/webhook/{call_id}")
 async def telephony_webhook(
     call_id: int,

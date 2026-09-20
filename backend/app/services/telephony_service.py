@@ -6,11 +6,15 @@ from typing import Dict, Any, Optional
 
 
 from app.services.vapi_service import VapiService
+from app.services.bolna_service import BolnaService
 
 class TelephonyService:
     def __init__(self):
         # Read credentials fresh on every instantiation so .env changes
         # take effect without restarting the server.
+        self.bolna = BolnaService()
+        self.bolna_configured = self.bolna.configured
+
         self.vapi = VapiService()
         self.vapi_configured = self.vapi.configured
 
@@ -113,7 +117,27 @@ class TelephonyService:
                 "reason": "Compliance: Mobile number is registered on the national DND (Do Not Call) registry."
             }
 
-        # 2. Vapi Outbound AI Caller (AI Sales Engine Pattern)
+        # 2. Bolna Outbound AI Caller (bolna-ai/bolna Pattern)
+        if (preferred_provider == "bolna" or (preferred_provider is None and self.bolna_configured)) and self.bolna_configured:
+            base_public_url = os.getenv("PUBLIC_URL", "")
+            bolna_webhook = f"{base_public_url.rstrip('/')}/api/calls/bolna/webhook" if base_public_url else None
+            bolna_res = self.bolna.place_outbound_call(
+                recipient_phone=customer_mobile,
+                customer_name=customer_name,
+                preferred_language=preferred_language,
+                company_name=company_name,
+                service_name=service_name,
+                service_description=service_description,
+                qualification_questions=qualification_questions,
+                call_id=custom_id,
+                webhook_url=bolna_webhook,
+            )
+            if bolna_res.get("status") == "success":
+                return {"status": "success", "sid": bolna_res["sid"], "provider": "bolna"}
+            elif bolna_res.get("status") == "failed":
+                print(f"[Telephony] Bolna call failed: {bolna_res.get('reason')}. Checking fallbacks.")
+
+        # 3. Vapi Outbound AI Caller (AI Sales Engine Pattern)
         if (preferred_provider == "vapi" or (preferred_provider is None and self.vapi_configured)) and self.vapi_configured:
             # Construct public Vapi webhook URL if available
             base_public_url = os.getenv("PUBLIC_URL", "")

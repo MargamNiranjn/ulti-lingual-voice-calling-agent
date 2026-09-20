@@ -1,9 +1,9 @@
 @echo off
-title Lead Sense - AI Voice Calling Agent Platform (4-1 Major Project)
+title Multi-Lingual Generative Voice Calling Agent (4-1 Major Project)
 color 0A
 
 echo =======================================================================
-echo          LEAD SENSE - MULTILINGUAL AI VOICE CALLING AGENT
+echo       MULTI LINGUAL GENERATIVE VOICE CALLING AGENT PLATFORM
 echo                  4-1 B.Tech Major Project Launcher
 echo =======================================================================
 echo.

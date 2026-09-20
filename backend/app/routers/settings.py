@@ -54,7 +54,7 @@ DEFAULT_SETTINGS = [
     {
         "key": "telephony_provider",
         "value": "simulator",
-        "description": "Active outbound dialer engine: 'vapi', 'twilio', 'exotel', or 'simulator'."
+        "description": "Active outbound dialer engine: 'bolna', 'twilio', 'vapi', 'exotel', or 'simulator'."
     },
     {
         "key": "vapi_api_key",
@@ -70,6 +70,21 @@ DEFAULT_SETTINGS = [
         "key": "vapi_assistant_id",
         "value": "",
         "description": "Vapi Assistant ID for outbound sales qualification."
+    },
+    {
+        "key": "bolna_api_key",
+        "value": "",
+        "description": "Bolna API Key (bolna-ai/bolna)."
+    },
+    {
+        "key": "bolna_agent_id",
+        "value": "",
+        "description": "Bolna Voice Agent ID for outbound calling."
+    },
+    {
+        "key": "bolna_server_url",
+        "value": "https://api.bolna.dev",
+        "description": "Bolna Engine API Server URL (default: https://api.bolna.dev or local: http://localhost:5001)."
     },
     {
         "key": "crm_webhook_url",

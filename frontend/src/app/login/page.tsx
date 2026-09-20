@@ -52,8 +52,11 @@ export default function LoginPage() {
           <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-xl shadow-blue-600/40 mb-4 animate-float-gentle">
             <PhoneCall className="h-8 w-8" />
           </div>
-          <h2 className="text-center text-3xl font-extrabold tracking-tight text-white flex items-center gap-2">
-            LeadSense <span className="text-xs px-2 py-0.5 rounded-md bg-blue-500/20 text-blue-400 border border-blue-500/30 uppercase font-bold tracking-wide">PRO</span>
+          <h2 className="text-center text-xl font-extrabold tracking-tight text-white uppercase flex flex-col items-center gap-1.5">
+            MULTI LINGUAL GENERATIVE
+            <span className="text-blue-400 text-lg flex items-center gap-2">
+              VOICE CALLING AGENT <span className="text-xs px-2 py-0.5 rounded-md bg-blue-500/20 text-blue-400 border border-blue-500/30 uppercase font-bold tracking-wide">PRO</span>
+            </span>
           </h2>
           <p className="mt-2 text-center text-sm text-slate-400 font-medium tracking-wide">
             Autonomous Multilingual Lead Qualification Platform

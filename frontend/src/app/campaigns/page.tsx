@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Sidebar from "@/components/Sidebar";
+import TopBar from "@/components/TopBar";
+import CampaignWorkflowBuilder from "@/components/CampaignWorkflowBuilder";
 import api from "@/lib/api";
 import {
   Play,
@@ -259,25 +261,46 @@ export default function CampaignsPage() {
 
   const isRunning = campaigns.some((c) => c.status === "Running");
 
-  // ─── Render ───────────────────────────────────────────────────────────────────
-
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col md:flex-row">
+    <div className="min-h-screen bg-[#05070d] text-slate-100 flex flex-col md:flex-row relative overflow-hidden font-sans cyber-grid">
+      {/* Neural glow backdrops */}
+      <div className="absolute top-[-10%] left-[15%] w-[650px] h-[650px] bg-cyan-600/10 rounded-full blur-[180px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[10%] w-[550px] h-[550px] bg-violet-600/10 rounded-full blur-[180px] pointer-events-none" />
+
       <Sidebar />
 
-      <main className="flex-1 md:ml-64 p-6 md:p-8 space-y-8 overflow-y-auto">
+      <main className="flex-1 md:ml-64 p-5 md:p-8 space-y-7 overflow-y-auto relative z-10">
+        <TopBar
+          title="Campaign Mission Control"
+          subtitle="Orchestrate Bulk Outbound Voice Calling, Language Routing & Lead Qualification"
+          activeCallsCount={liveCalls.length}
+        />
 
-        {/* Header */}
-        <div className="flex items-center justify-between">
+        {/* ── Visual Campaign Workflow Builder ── */}
+        <CampaignWorkflowBuilder
+          isRunning={isRunning}
+          onLaunch={() => {
+            if (campaigns.length > 0) {
+              handleStartAI(campaigns[0].id);
+            } else {
+              setIsCreateOpen(true);
+            }
+          }}
+        />
+
+        {/* Action Header */}
+        <div className="flex items-center justify-between pt-2">
           <div>
-            <h2 className="text-3xl font-extrabold tracking-tight text-white">Campaign Management</h2>
-            <p className="text-sm text-slate-400 font-medium">
-              Launch, pause, or monitor bulk AI outbound qualified calls.
+            <h3 className="text-xl font-bold tracking-tight text-white font-mono flex items-center gap-2">
+              ACTIVE OUTBOUND CAMPAIGNS
+            </h3>
+            <p className="text-xs text-slate-400 font-medium">
+              Autonomous dialing campaigns with sequential retry and live status telemetry.
             </p>
           </div>
           <button
             onClick={() => setIsCreateOpen(true)}
-            className="flex items-center gap-2 px-5 py-2.5 text-xs font-bold text-white bg-purple-600 hover:bg-purple-500 rounded-xl cursor-pointer glow-btn transition-all"
+            className="flex items-center gap-2 px-5 py-2.5 text-xs font-bold text-black bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 rounded-xl cursor-pointer shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all font-mono uppercase"
           >
             <Plus className="h-4 w-4" /> Create Campaign
           </button>

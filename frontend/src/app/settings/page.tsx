@@ -13,6 +13,7 @@ import {
   AlertCircle,
   Mail
 } from "lucide-react";
+import TopBar from "@/components/TopBar";
 
 interface Setting {
   id: number;
@@ -44,8 +45,11 @@ export default function SettingsPage() {
   const [qualificationQuestions, setQualificationQuestions] = useState("");
   const [aiInstructions, setAiInstructions] = useState("");
   
-  // Telephony & Vapi states
+  // Telephony, Bolna & Vapi states
   const [telephonyProvider, setTelephonyProvider] = useState("simulator");
+  const [bolnaApiKey, setBolnaApiKey] = useState("");
+  const [bolnaAgentId, setBolnaAgentId] = useState("");
+  const [bolnaServerUrl, setBolnaServerUrl] = useState("https://api.bolna.dev");
   const [vapiApiKey, setVapiApiKey] = useState("");
   const [vapiPhoneId, setVapiPhoneId] = useState("");
   const [vapiAssistantId, setVapiAssistantId] = useState("");
@@ -91,6 +95,9 @@ export default function SettingsPage() {
       setAiInstructions(find("ai_agent_instructions"));
 
       setTelephonyProvider(find("telephony_provider") || "simulator");
+      setBolnaApiKey(find("bolna_api_key"));
+      setBolnaAgentId(find("bolna_agent_id"));
+      setBolnaServerUrl(find("bolna_server_url") || "https://api.bolna.dev");
       setVapiApiKey(find("vapi_api_key"));
       setVapiPhoneId(find("vapi_phone_number_id"));
       setVapiAssistantId(find("vapi_assistant_id"));
@@ -144,6 +151,9 @@ export default function SettingsPage() {
         qualification_questions: qualificationQuestions,
         ai_agent_instructions: aiInstructions,
         telephony_provider: telephonyProvider,
+        bolna_api_key: bolnaApiKey,
+        bolna_agent_id: bolnaAgentId,
+        bolna_server_url: bolnaServerUrl,
         vapi_api_key: vapiApiKey,
         vapi_phone_number_id: vapiPhoneId,
         vapi_assistant_id: vapiAssistantId,
@@ -197,18 +207,14 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col md:flex-row">
+    <div className="min-h-screen bg-[#05070d] text-slate-100 flex flex-col md:flex-row relative overflow-hidden font-sans cyber-grid">
       <Sidebar />
 
-      <main className="flex-1 md:ml-64 p-6 md:p-8 space-y-8 overflow-y-auto">
-        <div>
-          <h2 className="text-3xl font-extrabold tracking-tight text-white">
-            System Settings
-          </h2>
-          <p className="text-sm text-slate-400 font-medium">
-            Customize AI knowledge context, link CRM integrations, and configure calling compliance guidelines.
-          </p>
-        </div>
+      <main className="flex-1 md:ml-64 p-5 md:p-8 space-y-6 overflow-y-auto relative z-10">
+        <TopBar
+          title="System & AI Directives"
+          subtitle="Configure Company Pitch, Lead Qualification Questions, Telephony Keys & SMTP Alerts"
+        />
 
         {loading ? (
           <div className="flex justify-center items-center py-20 text-slate-500 text-xs">
@@ -297,6 +303,7 @@ export default function SettingsPage() {
                     <select value={telephonyProvider} onChange={(e) => setTelephonyProvider(e.target.value)}
                       className="w-full rounded-xl bg-slate-950 border border-slate-850 px-4 py-2.5 text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-purple-500">
                       <option value="simulator">Simulation Mode (Default - Zero Cost / College Demo)</option>
+                      <option value="bolna">Bolna AI (bolna-ai/bolna - Multilingual Indian Voice)</option>
                       <option value="vapi">Vapi.ai Voice Agent (Production Calling)</option>
                       <option value="twilio">Twilio Voice + Native Webhook</option>
                       <option value="exotel">Exotel (Indian Telephony)</option>
@@ -319,6 +326,34 @@ export default function SettingsPage() {
                   <textarea value={aiInstructions} onChange={(e) => setAiInstructions(e.target.value)}
                     className="w-full rounded-xl bg-slate-950 border border-slate-850 p-3 text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-purple-500 h-20 resize-none leading-relaxed"
                     placeholder="e.g. Introduce yourself warmly. Be polite and concise. Respect rejections immediately..." />
+                </div>
+
+                {/* Bolna AI Engine Integration (bolna-ai/bolna) */}
+                <div className="space-y-4 border-t border-slate-900 pt-4">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                    <Database className="h-4 w-4 text-emerald-400" /> Bolna AI (bolna-ai/bolna) Multilingual Voice Engine
+                  </label>
+                  <p className="text-[10px] text-slate-500">Connect to Bolna Cloud (https://api.bolna.dev) or your local self-hosted Bolna engine (http://localhost:5001). Outbound calls route directly via your Twilio line.</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div className="space-y-1">
+                      <label className="block text-[10px] uppercase font-bold text-slate-500">Bolna Server URL</label>
+                      <input type="text" value={bolnaServerUrl} onChange={(e) => setBolnaServerUrl(e.target.value)}
+                        className="w-full rounded-xl bg-slate-950 border border-slate-850 px-3 py-2 text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                        placeholder="https://api.bolna.dev" />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="block text-[10px] uppercase font-bold text-slate-500">Bolna API Key</label>
+                      <input type="password" value={bolnaApiKey} onChange={(e) => setBolnaApiKey(e.target.value)}
+                        className="w-full rounded-xl bg-slate-950 border border-slate-850 px-3 py-2 text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                        placeholder="bolna_sec_••••••••" />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="block text-[10px] uppercase font-bold text-slate-500">Agent ID</label>
+                      <input type="text" value={bolnaAgentId} onChange={(e) => setBolnaAgentId(e.target.value)}
+                        className="w-full rounded-xl bg-slate-950 border border-slate-850 px-3 py-2 text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                        placeholder="uuid-agent-id" />
+                    </div>
+                  </div>
                 </div>
 
                 {/* Vapi.ai Telephony Credentials */}
