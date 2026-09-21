@@ -1,15 +1,10 @@
 import axios from "axios";
 
-let API_URL = "http://localhost:8000";
+// Prefer configured cloud backend URL, fallback to localhost for development
+let API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
-if (typeof window !== "undefined") {
-  if (window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1") {
-    API_URL = window.location.origin;
-  } else {
-    API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-  }
-} else {
-  API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+if (API_URL.endsWith("/")) {
+  API_URL = API_URL.slice(0, -1);
 }
 
 const api = axios.create({

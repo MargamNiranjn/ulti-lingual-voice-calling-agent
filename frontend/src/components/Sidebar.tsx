@@ -12,6 +12,7 @@ import {
   FlaskConical,
   Cable,
   HelpCircle,
+  Users,
   Settings,
   LogOut,
   Menu,
@@ -26,6 +27,7 @@ export default function Sidebar() {
 
   const navItems = [
     { name: "Dashboard", href: "/dashboard", icon: LayoutGrid },
+    { name: "Customers", href: "/customers", icon: Users },
     { name: "AI Agent", href: "/ai-studio", icon: Bot },
     { name: "Voice Campaign", href: "/campaigns", icon: Volume2 },
     { name: "Chat", href: "/calls", icon: MessageSquare },
