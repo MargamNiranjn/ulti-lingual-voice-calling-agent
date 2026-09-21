@@ -113,9 +113,28 @@ export default function Sidebar() {
           </nav>
         </div>
 
-        {/* Minimal User Profile & Logout at Bottom */}
-        <div className="pt-4 border-t border-slate-800/60 flex items-center justify-between">
-          <div className="flex items-center gap-3 min-w-0">
+        {/* Live System Indicator & User Profile */}
+        <div className="space-y-3">
+          <div className="px-4 py-3 rounded-2xl bg-[#111528] border border-slate-800/80">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="flex h-2 w-2 relative">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                <span className="text-[11px] font-semibold text-slate-300">Cloud Engine</span>
+              </div>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 font-mono font-bold">
+                ONLINE
+              </span>
+            </div>
+            <p className="text-[10px] text-slate-500 mt-1 truncate">
+              Twilio • Groq • Neon DB
+            </p>
+          </div>
+
+          <div className="pt-3 border-t border-slate-800/60 flex items-center justify-between">
+            <div className="flex items-center gap-3 min-w-0">
             <div className="h-9 w-9 rounded-full bg-gradient-to-tr from-[#635BFF] to-[#8C74FF] p-[1.5px] shrink-0">
               <div className="h-full w-full rounded-full bg-[#121524] flex items-center justify-center text-xs font-bold text-white">
                 {user?.username?.substring(0, 2).toUpperCase() || "OP"}
@@ -133,6 +152,7 @@ export default function Sidebar() {
           >
             <LogOut className="h-4 w-4" />
           </button>
+        </div>
         </div>
       </aside>
     </>

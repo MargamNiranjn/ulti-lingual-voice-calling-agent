@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Outfit } from "next/font/google";
 import { AuthProvider } from "@/context/AuthContext";
+import FloatingDialer from "@/components/FloatingDialer";
 import "./globals.css";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -30,6 +31,7 @@ export default function RootLayout({
       <body className={`${plusJakartaSans.variable} ${outfit.variable} antialiased min-h-screen bg-slate-950 text-slate-100 selection:bg-purple-600 selection:text-white`}>
         <AuthProvider>
           {children}
+          <FloatingDialer />
         </AuthProvider>
       </body>
     </html>

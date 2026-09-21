@@ -15,10 +15,14 @@ import {
   Zap,
   Flame,
   Clock,
-  ArrowUpRight
+  ArrowUpRight,
+  MessageCircle,
+  PhoneCall,
+  CheckCircle2,
 } from "lucide-react";
 import TopBar from "@/components/TopBar";
 import CallSimulator from "@/components/CallSimulator";
+import NativeLanguageBadge from "@/components/NativeLanguageBadge";
 
 interface Customer {
   id: number;
@@ -109,6 +113,19 @@ export default function CustomersPage() {
     } catch (err) {
       console.error(err);
       alert("Outbound dialer could not connect.");
+    }
+  };
+
+  // ── Trigger Live Outbound Call via Twilio ──
+  const triggerRealCall = async (customer: Customer) => {
+    try {
+      const res = await api.post(`/api/calls/manual?customer_id=${customer.id}`);
+      alert(`📞 Calling ${customer.name} at ${customer.mobile}!\n\nSpoken Language: ${customer.preferred_language}\nTwilio Call SID: ${res.data.sid || "Dispatched"}`);
+      fetchCustomers();
+    } catch (err: any) {
+      console.error(err);
+      const msg = err.response?.data?.detail || "Could not place live call.";
+      alert(`Call failed: ${msg}`);
     }
   };
 
@@ -319,9 +336,7 @@ export default function CustomersPage() {
                       <td className="px-6 py-4">{c.mobile}</td>
                       <td className="px-6 py-4 text-slate-400">{c.company_name || "—"}</td>
                       <td className="px-6 py-4">
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20">
-                          {c.preferred_language}
-                        </span>
+                        <NativeLanguageBadge language={c.preferred_language} size="sm" />
                       </td>
                       <td className="px-6 py-4 text-slate-300 font-medium">
                         {c.service_of_interest || "Website Development"}
@@ -348,16 +363,44 @@ export default function CustomersPage() {
                           : "bg-slate-800 text-slate-400 border border-slate-700"
                         }`}>{c.status}</span>
                       </td>
-                      <td className="px-6 py-4 text-right flex items-center justify-end gap-2.5">
-                        <button onClick={() => triggerCallSimulation(c)}
-                          className="p-2 bg-purple-600/15 border border-purple-500/20 text-purple-400 hover:bg-purple-600 hover:text-white rounded-lg transition-colors cursor-pointer"
-                          title="Simulate AI Call">
-                          <Phone className="h-4 w-4" />
+                      <td className="px-6 py-4 text-right flex items-center justify-end gap-2">
+                        {/* 1. Direct Live Call via Twilio */}
+                        <button
+                          onClick={() => triggerRealCall(c)}
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-500 hover:text-white rounded-xl text-xs font-bold transition-all shadow-sm shadow-emerald-500/10 active:scale-95"
+                          title="Call recipient phone via Twilio"
+                        >
+                          <PhoneCall className="h-3.5 w-3.5" />
+                          <span>Call</span>
                         </button>
-                        <button onClick={() => handleDelete(c.id)}
-                          className="p-2 bg-red-600/15 border border-red-500/20 text-red-400 hover:bg-red-600 hover:text-white rounded-lg transition-colors cursor-pointer"
-                          title="Delete Lead">
-                          <Trash2 className="h-4 w-4" />
+
+                        {/* 2. WhatsApp Direct Link */}
+                        <a
+                          href={`https://wa.me/${c.mobile.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(`Hello ${c.name}, following up regarding your interest in ${c.service_of_interest || "our services"}.`)}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-2 bg-emerald-600/15 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-600 hover:text-white rounded-xl transition-colors cursor-pointer"
+                          title="WhatsApp Follow-up"
+                        >
+                          <MessageCircle className="h-3.5 w-3.5" />
+                        </a>
+
+                        {/* 3. Browser Simulation */}
+                        <button
+                          onClick={() => triggerCallSimulation(c)}
+                          className="p-2 bg-purple-600/15 border border-purple-500/30 text-purple-400 hover:bg-purple-600 hover:text-white rounded-xl transition-colors cursor-pointer"
+                          title="Simulate in Browser"
+                        >
+                          <Phone className="h-3.5 w-3.5" />
+                        </button>
+
+                        {/* 4. Delete Lead */}
+                        <button
+                          onClick={() => handleDelete(c.id)}
+                          className="p-2 bg-red-600/15 border border-red-500/30 text-red-400 hover:bg-red-600 hover:text-white rounded-xl transition-colors cursor-pointer"
+                          title="Delete Lead"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
                         </button>
                       </td>
                     </tr>

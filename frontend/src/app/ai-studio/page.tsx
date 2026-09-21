@@ -41,16 +41,22 @@ export default function AIStudioPage() {
 
   const handleTestVoice = () => {
     setIsPlayingSample(true);
-    if (typeof window !== "undefined" && "speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(
-        "నమస్కారం! నేను LeadSense నుండి మాయాను మాట్లాడుతున్నాను. మీ వ్యాపారం కోసం ఈ-కామర్స్ మరియు వెబ్‌సైట్ సొల్యూషన్స్ గురించి చర్చిద్దాం."
-      );
-      utterance.rate = 1.0;
-      utterance.onend = () => setIsPlayingSample(false);
-      window.speechSynthesis.speak(utterance);
+    const win = typeof globalThis !== "undefined" ? (globalThis as any).window : null;
+    if (win && "speechSynthesis" in win) {
+      win.speechSynthesis.cancel();
+      const SpeechUtterance = (globalThis as any).SpeechSynthesisUtterance;
+      if (SpeechUtterance) {
+        const utterance = new SpeechUtterance(
+          "నమస్కారం! నేను LeadSense నుండి మాయాను మాట్లాడుతున్నాను. మీ వ్యాపారం కోసం ఈ-కామర్స్ మరియు వెబ్‌సైట్ సొల్యూషన్స్ గురించి చర్చిద్దాం."
+        );
+        utterance.rate = 1.0;
+        utterance.onend = () => setIsPlayingSample(false);
+        win.speechSynthesis.speak(utterance);
+      } else {
+        setTimeout(() => setIsPlayingSample(false), 2500);
+      }
     } else {
-      setTimeout(() => setIsPlayingSample(false), 3000);
+      setTimeout(() => setIsPlayingSample(false), 2500);
     }
   };
 
@@ -145,7 +151,7 @@ export default function AIStudioPage() {
               <input
                 type="text"
                 value={agentName}
-                onChange={(e) => setAgentName(e.target.value)}
+                onChange={(e: any) => setAgentName(e.target.value)}
                 className="w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-2.5 text-slate-200 focus:outline-none focus:border-cyan-500/50 font-mono"
               />
             </div>
@@ -157,7 +163,7 @@ export default function AIStudioPage() {
               </label>
               <select
                 value={voiceModel}
-                onChange={(e) => setVoiceModel(e.target.value)}
+                onChange={(e: any) => setVoiceModel(e.target.value)}
                 className="w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-2.5 text-slate-200 focus:outline-none focus:border-cyan-500/50 font-sans"
               >
                 <option value="Female — Professional & Conversational">Maya • Indian English & Regional Nuance</option>
@@ -174,7 +180,7 @@ export default function AIStudioPage() {
               <input
                 type="text"
                 value={personality}
-                onChange={(e) => setPersonality(e.target.value)}
+                onChange={(e: any) => setPersonality(e.target.value)}
                 className="w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-2.5 text-slate-200 focus:outline-none focus:border-cyan-500/50 font-sans"
               />
             </div>
@@ -187,7 +193,7 @@ export default function AIStudioPage() {
               <input
                 type="text"
                 value={responseLength}
-                onChange={(e) => setResponseLength(e.target.value)}
+                onChange={(e: any) => setResponseLength(e.target.value)}
                 className="w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-2.5 text-slate-200 focus:outline-none focus:border-cyan-500/50 font-sans"
               />
             </div>

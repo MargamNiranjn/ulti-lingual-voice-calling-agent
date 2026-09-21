@@ -401,6 +401,62 @@ export default function MinimalistDashboard() {
           {/* ════════ RIGHT COLUMN (4 cols) ════════ */}
           <div className="lg:col-span-4 space-y-6">
 
+            {/* Regional Language Breakdown Card */}
+            <div className="bg-[#121524] rounded-3xl p-6 border border-slate-800/60 space-y-4 shadow-sm">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="text-lg">🇮🇳</span>
+                  <h3 className="text-sm font-bold text-white tracking-tight">Regional Languages</h3>
+                </div>
+                <span className="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full font-bold">
+                  Active
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-400">Outbound call distribution across India</p>
+
+              <div className="space-y-3 pt-1">
+                <div>
+                  <div className="flex justify-between text-xs font-semibold mb-1">
+                    <span className="text-amber-400 flex items-center gap-1">Telugu <span className="text-[10px] font-normal text-amber-400/80">(తెలుగు)</span></span>
+                    <span className="text-slate-300">52%</span>
+                  </div>
+                  <div className="w-full bg-slate-800/80 h-2 rounded-full overflow-hidden">
+                    <div className="bg-amber-400 h-full rounded-full w-[52%]"></div>
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex justify-between text-xs font-semibold mb-1">
+                    <span className="text-sky-400 flex items-center gap-1">Hindi <span className="text-[10px] font-normal text-sky-400/80">(हिन्दी)</span></span>
+                    <span className="text-slate-300">28%</span>
+                  </div>
+                  <div className="w-full bg-slate-800/80 h-2 rounded-full overflow-hidden">
+                    <div className="bg-sky-400 h-full rounded-full w-[28%]"></div>
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex justify-between text-xs font-semibold mb-1">
+                    <span className="text-indigo-400">English (Indian Accent)</span>
+                    <span className="text-slate-300">12%</span>
+                  </div>
+                  <div className="w-full bg-slate-800/80 h-2 rounded-full overflow-hidden">
+                    <div className="bg-indigo-400 h-full rounded-full w-[12%]"></div>
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex justify-between text-xs font-semibold mb-1">
+                    <span className="text-emerald-400 flex items-center gap-1">Tamil <span className="text-[10px] font-normal text-emerald-400/80">(தமிழ்)</span></span>
+                    <span className="text-slate-300">8%</span>
+                  </div>
+                  <div className="w-full bg-slate-800/80 h-2 rounded-full overflow-hidden">
+                    <div className="bg-emerald-400 h-full rounded-full w-[8%]"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* 1. Agent Configuration Card */}
             <div className="bg-[#121524] rounded-3xl p-6 border border-slate-800/60 space-y-5 shadow-sm">
               {/* Header */}
